@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}{{ produto.nome }}{% endblock %}
+{% block content %}
+<div class="container page-content">
+  <div class="breadcrumbs"><a href="{{ url_for('shop.index') }}">Início</a><span>›</span><a href="{{ url_for('shop.index', categoria=produto.categoria) }}">{{ produto.categoria }}</a><span>›</span><span>{{ produto.nome }}</span></div>
+  <div class="detail-layout">
+    <div class="detail-image"><img src="{{ produto.imagem }}" alt="{{ produto.nome }}" onerror="this.onerror=null;this.src='/static/img/sem-foto.svg'"></div>
+    <div class="detail-info">
+      <span class="eyebrow">{{ produto.categoria | upper }}</span>
+      <h1>{{ produto.nome }}</h1>
+      <p class="detail-desc">{{ produto.descricao or 'Produto selecionado para o conforto da sua casa.' }}</p>
+      <div class="detail-price">{{ produto.preco_centavos | brl }}</div>
+      <p class="price-caption">Valor sujeito à confirmação de disponibilidade e condições pela loja.</p>
+      <div class="stock-label {{ 'in-stock' if produto.estoque > 0 else 'out-of-stock' }}">{{ '● Em estoque (' ~ produto.estoque ~ ' disponível)' if produto.estoque > 0 else '● Produto indisponível' }}</div>
+      <form class="detail-add" action="{{ url_for('shop.add_to_cart') }}" method="post" data-add-to-cart>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="produto_id" value="{{ produto.id }}">
+        <label for="qty">Quantidade</label>
+        <div class="detail-buy-row"><input id="qty" name="quantidade" type="number" min="1" max="{{ [produto.estoque, 20]|min }}" value="1" required {% if produto.estoque < 1 %}disabled{% endif %}><button class="btn btn-orange" type="submit" {% if produto.estoque < 1 %}disabled{% endif %}><svg class="icon"><use href="#i-cart"/></svg> Adicionar ao carrinho</button></div>
+      </form>
+      <div class="detail-note">✓ Finalize pelo WhatsApp &nbsp; ✓ Sem necessidade de cadastro do cliente</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

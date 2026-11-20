@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Meu carrinho{% endblock %}
+{% block content %}
+<div class="container page-content">
+  <div class="section-heading"><div><span class="eyebrow">SEU PEDIDO</span><h1>Meu carrinho <span class="heading-orange">de compras</span></h1></div><a href="{{ url_for('shop.index') }}#produtos" class="text-link">Continuar comprando →</a></div>
+  {% if itens %}
+    <div class="cart-layout">
+      <div class="cart-items">
+        {% for item in itens %}
+          <div class="cart-item">
+            <img src="{{ item.produto.imagem }}" alt="{{ item.produto.nome }}" onerror="this.onerror=null;this.src='/static/img/sem-foto.svg'">
+            <div class="cart-item-info"><span class="card-category">{{ item.produto.categoria }}</span><a href="{{ url_for('shop.product_detail', product_id=item.produto.id) }}" class="cart-item-title">{{ item.produto.nome }}</a><span class="cart-item-price">{{ item.produto.preco_centavos | brl }} / unidade</span>
+              <form method="post" action="{{ url_for('shop.remove_from_cart') }}" class="remove-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="produto_id" value="{{ item.produto.id }}"><button type="submit" class="remove-btn"><svg class="icon"><use href="#i-trash"/></svg> Remover</button></form>
+            </div>
+            <div class="cart-item-right"><form class="qty-form" action="{{ url_for('shop.update_cart') }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="produto_id" value="{{ item.produto.id }}"><label for="q-{{ item.produto.id }}">Quantidade</label><div class="qty-controls"><input id="q-{{ item.produto.id }}" type="number" name="quantidade" min="0" max="{{ [item.produto.estoque, 20]|min }}" value="{{ item.quantidade }}" required><button type="submit" class="btn-small">Atualizar</button></div></form><strong>{{ item.subtotal | brl }}</strong></div>
+          </div>
+        {% endfor %}
+      </div>
+      <aside class="order-summary"><h2>Resumo do pedido</h2><div class="summary-line"><span>Itens</span><span>{{ itens | sum(attribute='quantidade') }}</span></div><div class="summary-line"><span>Subtotal</span><span>{{ total | brl }}</span></div><div class="summary-total"><span>Total</span><strong>{{ total | brl }}</strong></div><a href="{{ url_for('shop.buy') }}" class="btn btn-orange btn-full buy-btn">Comprar pelo WhatsApp <svg class="icon"><use href="#i-arrow"/></svg></a><p>O WhatsApp abrirá com todos os produtos, quantidades, preços e valor total. Confira a mensagem e pressione Enviar para solicitar o pedido.</p>
+        <details class="whatsapp-order-preview">
+          <summary>Visualizar mensagem do WhatsApp</summary>
+          <pre>{{ mensagem_whatsapp }}</pre>
+        </details></aside>
+    </div>
+  {% else %}
+    <div class="state-card"><span class="state-icon">🛒</span><h3>Seu carrinho está vazio</h3><p>Encontre os melhores móveis e eletrodomésticos no catálogo da Innova.</p><a href="{{ url_for('shop.index') }}#produtos" class="btn btn-orange">Explorar produtos</a></div>
+  {% endif %}
+</div>
+{% endblock %}

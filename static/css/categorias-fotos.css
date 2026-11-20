@@ -1,0 +1,92 @@
+/* Innova Eletromóveis — Galeria de categorias com fotografias fornecidas pela loja.
+   Carregada após innova-premium.css para preservar o restante do tema. */
+
+.categories-section .category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+.categories-section .category-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 0;
+  overflow: hidden;
+  min-height: 265px;
+  padding: 0 0 18px;
+  border: 1px solid #eadfd3;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(86, 49, 23, 0.06);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.categories-section .category-tile::after { display: none; }
+.categories-section .category-tile:hover,
+.categories-section .category-tile.selected {
+  transform: translateY(-4px);
+  background: #ffffff;
+  border-color: #f3ae79;
+  box-shadow: 0 19px 40px rgba(90, 46, 12, 0.13);
+}
+.categories-section .category-art,
+.categories-section .category-tile:hover .category-art {
+  display: block;
+  width: 100%;
+  height: 205px;
+  padding: 11px 13px 4px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(145deg, #f8f7f4 0%, #f3f0eb 100%);
+  box-shadow: none;
+  transform: none;
+  overflow: hidden;
+}
+.categories-section .category-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: none;
+  transition: transform .35s ease;
+}
+.categories-section .category-tile:hover .category-art img {
+  transform: scale(1.06);
+}
+.categories-section .category-tile strong {
+  padding: 16px 12px 0;
+  margin: 0;
+  color: #3d312b;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+}
+/* Elimina também as áreas reservadas às estrelas decorativas antigas. */
+.hero-eyebrow .icon { display: none; }
+.hero-mini span, .hero-showcase-sparkle { display: none; }
+
+@media (max-width: 1060px) {
+  .categories-section .category-grid { gap: 12px; }
+  .categories-section .category-tile { min-height: 225px; padding-bottom: 14px; }
+  .categories-section .category-art,
+  .categories-section .category-tile:hover .category-art { height: 171px; padding: 10px; }
+  .categories-section .category-tile strong { font-size: 12px; padding-top: 13px; }
+}
+@media (max-width: 780px) {
+  .categories-section .category-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  .categories-section .category-tile { min-height: 230px; }
+  .categories-section .category-art,
+  .categories-section .category-tile:hover .category-art { height: 180px; }
+}
+@media (max-width: 480px) {
+  .categories-section .category-grid { gap: 10px; }
+  .categories-section .category-tile { min-height: 187px; padding-bottom: 11px; border-radius: 16px; }
+  .categories-section .category-art,
+  .categories-section .category-tile:hover .category-art { height: 142px; padding: 7px; }
+  .categories-section .category-tile strong { font-size: 11px; padding: 11px 5px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .categories-section .category-tile,
+  .categories-section .category-art img { transition: none; }
+}

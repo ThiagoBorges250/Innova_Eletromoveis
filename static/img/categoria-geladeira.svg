@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" fill="none" aria-hidden="true">
+<defs>
+ <linearGradient id="cream" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffefa"/><stop offset="1" stop-color="#f1dfcf"/></linearGradient>
+ <linearGradient id="cushion" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffeddc"/><stop offset="1" stop-color="#e5b38d"/></linearGradient>
+ <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f9dcc0"/><stop offset="1" stop-color="#d69c6c"/></linearGradient>
+ <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8f7f2"/><stop offset="1" stop-color="#ccd0ca"/></linearGradient>
+ <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e5eff0"/><stop offset="1" stop-color="#9eafa9"/></linearGradient>
+</defs><ellipse cx="48" cy="89" rx="28" ry="3" fill="#b55f28" opacity=".10"/>
+<g stroke="#98542c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<rect x="30" y="10" width="38" height="74" rx="7" fill="url(#steel)"/><path d="M31 41h36"/><path d="M37 19v14M37 48v20" stroke="#b57449" stroke-width="3.6" stroke-linecap="round"/><path d="M36 84v4M62 84v4"/><path d="M58 15v61" stroke="white" stroke-width="2.8" opacity=".52"/>
+</g></svg>
