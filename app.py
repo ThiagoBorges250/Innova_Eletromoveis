@@ -91,6 +91,12 @@ def create_app(test_config=None):
     return app
 
 
+
+# Aplicação utilizada pela Vercel
+app = create_app()
+
+# Execução local no VS Code
 if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=os.getenv("FLASK_DEBUG", "0") == "1")
+    app.run(
+        debug=os.getenv("FLASK_DEBUG", "0") == "1"
+    )
