@@ -57,7 +57,7 @@ O vídeo apresenta o funcionamento do e-commerce, incluindo:
 
 ### ▶️ Link do vídeo
 
-[🎥 Assistir à demonstração do sistema] https://drive.google.com/uc?id=1gQCmnKTpDYIDv5JZNjpS6IbpGIkXl753&export=download
+[🎥 Assistir à demonstração do sistema] https://drive.google.com/file/d/1gQCmnKTpDYIDv5JZNjpS6IbpGIkXl753/view?usp=drive_link
 
 ## 👨‍💻 Desenvolvedores
 
