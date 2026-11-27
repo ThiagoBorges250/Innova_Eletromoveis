@@ -5,7 +5,6 @@
   const storageKey = 'innova-ai:historico:v1';
   const maxTurns = 12;
   const launcher = widget.querySelector('.ai-launcher');
-  const launcherLabel = launcher.lastElementChild;
   const panel = widget.querySelector('.ai-panel');
   const chat = widget.querySelector('.ai-chat');
   const transcript = widget.querySelector('.ai-turns');
@@ -94,7 +93,6 @@
     if (closed) showError();
     panel.hidden = true;
     launcher.hidden = false;
-    launcherLabel.textContent = closed ? 'Innova AI' : 'Continuar conversa';
     launcher.setAttribute('aria-expanded', 'false');
     launcher.focus();
   }

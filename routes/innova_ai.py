@@ -72,7 +72,7 @@ def _disable_cache(response):
 @bp.post("/api/innova-ai/perguntar")
 def ask():
     if not current_app.config["INNOVA_AI_ENABLED"]:
-        return jsonify(error="Assistente indisponível."), 503
+        return jsonify(error="O Innova AI está temporariamente indisponível. Tente novamente mais tarde."), 503
     request.max_content_length = 8192
     data = request.get_json(silent=True)
     if not isinstance(data, dict) or not _string(data.get("pergunta")):

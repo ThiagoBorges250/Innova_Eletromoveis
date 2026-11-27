@@ -1,11 +1,12 @@
 <div class="innova-ai" data-innova-ai data-endpoint="{{ url_for('innova_ai.ask') }}"
      data-placeholder="{{ url_for('static', filename='img/sem-foto.svg') }}">
   <button type="button" class="ai-launcher" aria-controls="innova-ai-panel" aria-expanded="false">
-    <span class="ai-mark" aria-hidden="true">✦</span><span>Innova AI</span>
+    <span class="ai-mark" aria-hidden="true"><svg class="icon"><use href="#i-innova-ai"/></svg></span>
+    <span>Fale com a IA</span>
   </button>
   <section class="ai-panel" id="innova-ai-panel" aria-labelledby="innova-ai-title" hidden>
     <header class="ai-header">
-      <span class="ai-mark" aria-hidden="true">✦</span>
+      <span class="ai-mark" aria-hidden="true"><svg class="icon"><use href="#i-innova-ai"/></svg></span>
       <div class="ai-heading"><h2 id="innova-ai-title">Innova AI</h2><p>Assistente de compras</p></div>
       <button type="button" data-minimize aria-label="Minimizar assistente" title="Minimizar">−</button>
       <button type="button" data-close aria-label="Fechar assistente" title="Fechar">×</button>

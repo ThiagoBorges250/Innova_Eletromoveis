@@ -56,9 +56,34 @@ def test_embeddings_share_the_model_and_check_dimensions(monkeypatch):
         embeddings.embed_query("Sofá retrátil")
 
 
+def test_chat_launcher_renders_on_catalog_pages_when_queries_are_paused(catalog, monkeypatch):
+    from app import create_app
+
+    monkeypatch.setenv("INNOVA_AI_ENABLED", "0")
+    monkeypatch.setenv("REDIS_URL", "")
+    pid = add_product(catalog)
+    app = create_app({"TESTING": True, "SECRET_KEY": "teste"})
+    client = app.test_client()
+    for path in ("/", "/?categoria=Sof%C3%A1s", f"/produto/{pid}", "/carrinho"):
+        response = client.get(path)
+        assert response.status_code == 200
+        assert b"Fale com a IA" in response.data
+        assert b'/static/css/innova-ai.css' in response.data
+        assert b'/static/js/innova-ai.js' in response.data
+        assert b'data-endpoint="/api/innova-ai/perguntar"' in response.data
+
+    assert b"Fale com a IA" not in client.get("/admin/login").data
+    token = client.get("/").data.split(b'name="csrf-token" content="')[1].split(b'"')[0].decode()
+    response = client.post("/api/innova-ai/perguntar", json={"pergunta": "Sofás"},
+                           headers={"X-CSRFToken": token})
+    assert response.status_code == 503
+    assert "temporariamente indisponível" in response.json["error"]
+
+
 def test_assistant_revalidates_price_and_never_returns_model_invented_ids(catalog, monkeypatch):
     from app import create_app
 
+    monkeypatch.delenv("INNOVA_AI_ENABLED", raising=False)
     selected = add_product(catalog)
     sold_out = add_product(catalog, estoque=0)
     outside_budget = add_product(catalog, preco_centavos=250000)
@@ -82,14 +107,16 @@ def test_assistant_revalidates_price_and_never_returns_model_invented_ids(catalo
 
     monkeypatch.setattr(vector_store, "search", search)
     monkeypatch.setattr(embeddings, "gemini_request", gemini)
-    flask_app = create_app({"TESTING": True, "SECRET_KEY": "teste", "INNOVA_AI_ENABLED": True})
+    flask_app = create_app({"TESTING": True, "SECRET_KEY": "teste", "SESSION_COOKIE_SECURE": True})
     client = flask_app.test_client()
     endpoint = "/api/innova-ai/perguntar"
     question = {"pergunta": "Sofás até R$ 2.000"}
-    assert client.post(endpoint, json=question).status_code == 400
-    page = client.get("/")
+    origin = "https://innova.test"
+    assert client.post(endpoint, base_url=origin, json=question).status_code == 400
+    page = client.get("/", base_url=origin)
     token = page.data.split(b'name="csrf-token" content="')[1].split(b'"')[0].decode()
-    res = client.post(endpoint, json=question, headers={"X-CSRFToken": token})
+    headers = {"X-CSRFToken": token, "Referer": f"{origin}/"}
+    res = client.post(endpoint, base_url=origin, json=question, headers=headers)
     assert res.status_code == 200
     assert res.headers["Cache-Control"] == "no-store"
     assert [item["id"] for item in res.json["produtos"]] == [str(selected)]
@@ -97,7 +124,7 @@ def test_assistant_revalidates_price_and_never_returns_model_invented_ids(catalo
     assert "inventado" not in res.get_data(as_text=True)
 
     monkeypatch.setattr("routes.innova_ai._retry_after", lambda: 17)
-    res = client.post(endpoint, json=question, headers={"X-CSRFToken": token})
+    res = client.post(endpoint, base_url=origin, json=question, headers=headers)
     assert res.status_code == 429 and res.headers["Retry-After"] == "17"
 
 

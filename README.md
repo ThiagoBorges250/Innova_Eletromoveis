@@ -47,8 +47,10 @@ O sistema utiliza três bancos de dados:
 1. No **SQL Editor** do Supabase, execute [`sql/supabase_innova_ai.sql`](sql/supabase_innova_ai.sql). O script usa a tabela existente, valida `vector(384)`, instala a função `buscar_produtos`, cria o índice HNSW de cosseno e restringe o acesso à função e aos vetores ao backend. A coluna `modelo_embedding` identifica vetores compatíveis com as buscas do site.
 2. Preencha `GEMINI_API_KEY` no `.env` local junto com as configurações de MongoDB, Redis e Supabase. Use a mesma origem de dados que a loja que pretende indexar.
 3. Com o ambiente virtual instalado no Windows, execute `.\.venv\Scripts\python.exe indexar_produtos.py` no PowerShell, na raiz do projeto. O comando atualiza o conteúdo alterado e remove vetores de produtos desativados ou excluídos. Se interrompido, pode ser executado novamente.
-4. Configure a automação conforme o [guia de importação do n8n](n8n/README.md) e adicione as variáveis do `.env.example` ao ambiente do servidor. Defina `INNOVA_AI_ENABLED=1` quando a indexação estiver pronta. No deploy da Vercel, configure `FLASK_COOKIE_SECURE=1` e carregue as variáveis pelo painel do projeto. Em desenvolvimento local por HTTP, mantenha `FLASK_COOKIE_SECURE=0`.
-5. Abra a loja e consulte uma categoria com orçamento, por exemplo **Sofás até R$ 2.000**. Abra um card e confira o preço na página do produto.
+4. Configure a automação conforme o [guia do n8n](n8n/README.md) e preencha no servidor as variáveis do `.env.example`. Na Vercel, configure `FLASK_COOKIE_SECURE=1` e as credenciais de Gemini, MongoDB, Redis e Supabase no ambiente **Production** do projeto. Em desenvolvimento local por HTTP, mantenha `FLASK_COOKIE_SECURE=0`. [Variáveis de ambiente da Vercel](https://vercel.com/docs/environment-variables)
+5. Abra **Fale com a IA** e consulte uma categoria com orçamento, por exemplo **Sofás até R$ 2.000**. Abra um card e confira o preço na página do produto.
+
+O botão aparece nas páginas públicas da loja. As consultas ao RAG são habilitadas por padrão. Se `INNOVA_AI_ENABLED=0`, o botão abre a conversa e o envio informa que o assistente está temporariamente indisponível. Para reativar as consultas, use `INNOVA_AI_ENABLED=1` ou remova a variável. Na Vercel, mudanças nas variáveis valem para os próximos deploys. [Variáveis de ambiente da Vercel](https://vercel.com/docs/environment-variables)
 
 A indexação e a busca usam `gemini-embedding-2` com 384 dimensões via HTTPS. A Vercel limita o runtime às versões de Python disponíveis na plataforma e usa Python 3.12 por padrão. Os scripts e a aplicação também funcionam localmente em Python 3.10. [Gemini Embeddings](https://ai.google.dev/gemini-api/docs/embeddings) · [Runtime Python da Vercel](https://vercel.com/docs/functions/runtimes/python)
 
@@ -70,7 +72,7 @@ O vídeo apresenta o funcionamento do e-commerce, incluindo:
 - Carrinho de compras.
 - Finalização do pedido pelo WhatsApp.
 
-### ▶️ Link do vídeo
+### ▶️ Links
 
 [🎥 Assistir à demonstração do sistema] https://drive.google.com/file/d/1gQCmnKTpDYIDv5JZNjpS6IbpGIkXl753/view?usp=drive_link
 

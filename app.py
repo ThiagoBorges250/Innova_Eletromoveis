@@ -23,7 +23,7 @@ def create_app(test_config=None):
         PERMANENT_SESSION_LIFETIME=timedelta(hours=8),
         MAX_CONTENT_LENGTH=5 * 1024 * 1024,
         WTF_CSRF_TIME_LIMIT=8 * 60 * 60,
-        INNOVA_AI_ENABLED=os.getenv("INNOVA_AI_ENABLED", "0") == "1",
+        INNOVA_AI_ENABLED=(os.getenv("INNOVA_AI_ENABLED", "").strip() or "1") == "1",
         INNOVA_AI_ON_VERCEL=os.getenv("VERCEL") == "1" and os.getenv("VERCEL_ENV") != "development",
     )
     if test_config:
