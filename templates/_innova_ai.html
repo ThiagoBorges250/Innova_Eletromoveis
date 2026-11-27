@@ -1,0 +1,41 @@
+<div class="innova-ai" data-innova-ai data-endpoint="{{ url_for('innova_ai.ask') }}"
+     data-placeholder="{{ url_for('static', filename='img/sem-foto.svg') }}">
+  <button type="button" class="ai-launcher" aria-controls="innova-ai-panel" aria-expanded="false">
+    <span class="ai-mark" aria-hidden="true">✦</span><span>Innova AI</span>
+  </button>
+  <section class="ai-panel" id="innova-ai-panel" aria-labelledby="innova-ai-title" hidden>
+    <header class="ai-header">
+      <span class="ai-mark" aria-hidden="true">✦</span>
+      <div class="ai-heading"><h2 id="innova-ai-title">Innova AI</h2><p>Assistente de compras</p></div>
+      <button type="button" data-minimize aria-label="Minimizar assistente" title="Minimizar">−</button>
+      <button type="button" data-close aria-label="Fechar assistente" title="Fechar">×</button>
+    </header>
+    <div class="ai-chat" role="log" aria-label="Conversa com o Innova AI" aria-live="polite"
+         aria-relevant="additions text" tabindex="0">
+      <p class="ai-message">Olá! O que você está procurando para a sua casa?</p>
+      <div class="ai-suggestions" aria-label="Sugestões de perguntas">
+        <button type="button">Sofás até R$ 2.000</button>
+        <button type="button">Comparar geladeiras</button>
+        <button type="button">Lavadoras de 12 kg</button>
+      </div>
+      <div class="ai-turns"></div>
+    </div>
+    <div class="ai-status" role="status" hidden><span aria-hidden="true"></span>Consultando o catálogo…</div>
+    <form class="ai-form">
+      <details class="ai-filters">
+        <summary>Categoria e orçamento</summary>
+        <div class="ai-filter-fields">
+          <label>Categoria<select name="categoria"><option value="">Todas</option>
+            {% for category in categories %}<option>{{ category }}</option>{% endfor %}
+          </select></label>
+          <label>Até (R$)<input name="orcamento_maximo" maxlength="32" inputmode="decimal" placeholder="2.000,00"></label>
+        </div>
+      </details>
+      <div class="ai-composer">
+        <input name="pergunta" aria-label="Sua pergunta" placeholder="O que você procura?" maxlength="500" required autocomplete="off">
+        <button type="submit" aria-label="Enviar pergunta" title="Enviar"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </div>
+      <p class="ai-error" role="alert" hidden></p>
+    </form>
+  </section>
+</div>

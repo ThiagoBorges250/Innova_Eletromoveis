@@ -23,6 +23,8 @@ def create_app(test_config=None):
         PERMANENT_SESSION_LIFETIME=timedelta(hours=8),
         MAX_CONTENT_LENGTH=5 * 1024 * 1024,
         WTF_CSRF_TIME_LIMIT=8 * 60 * 60,
+        INNOVA_AI_ENABLED=os.getenv("INNOVA_AI_ENABLED", "0") == "1",
+        INNOVA_AI_ON_VERCEL=os.getenv("VERCEL") == "1" and os.getenv("VERCEL_ENV") != "development",
     )
     if test_config:
         app.config.update(test_config)
@@ -36,10 +38,13 @@ def create_app(test_config=None):
     app.jinja_env.filters["brl"] = format_brl
 
     from routes.admin import bp as admin_bp
+    from routes.innova_ai import bp as innova_ai_bp, synchronize
     from routes.shop import bp as shop_bp
 
     app.register_blueprint(shop_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(innova_ai_bp)
+    csrf.exempt(synchronize)
 
     @app.context_processor
     def template_globals():
@@ -85,6 +90,8 @@ def create_app(test_config=None):
 
     @app.errorhandler(413)
     def too_large(error):
+        if request.blueprint == "innova_ai":
+            return jsonify(error="A requisição do assistente é grande demais."), 413
         flash("Imagem muito grande: o limite é 5 MB.", "error")
         return redirect(url_for("admin.dashboard") if session.get("admin_id") else url_for("shop.index"))
 

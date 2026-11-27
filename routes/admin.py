@@ -10,6 +10,7 @@ from services.products import (
     create_product, delete_product, get_product, list_products, update_product,
     validate_product_form,
 )
+from services.vector_sync import notify_n8n
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -86,7 +87,8 @@ def new_product():
             data = validate_product_form(request.form)
             image_url = save_product_image(request.files.get("imagem"))
             data["imagem"] = image_url or "/static/img/sem-foto.svg"
-            create_product(data)
+            product_id = create_product(data)
+            notify_n8n(product_id)
             flash("Produto cadastrado no MongoDB! Já aparece no catálogo.", "success")
             return redirect(url_for("admin.dashboard"))
         except (ValueError, PyMongoError, RuntimeError) as exc:
@@ -113,6 +115,7 @@ def edit_product(product_id):
             if new_image:
                 data["imagem"] = new_image
             if update_product(product_id, data):
+                notify_n8n(product_id)
                 if new_image:
                     remove_product_image(produto.get("imagem"))
                 flash("Produto atualizado no MongoDB!", "success")
@@ -131,6 +134,7 @@ def remove_product(product_id):
     try:
         produto = get_product(product_id, admin=True)
         if produto and delete_product(product_id):
+            notify_n8n(product_id)
             remove_product_image(produto.get("imagem"))
             flash("Produto excluído do MongoDB.", "success")
         else:

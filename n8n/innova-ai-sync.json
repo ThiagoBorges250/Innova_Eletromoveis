@@ -1,0 +1,80 @@
+{
+  "name": "Innova AI - Sincronizar catálogo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "innova-produtos",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "cdacd75a-ca18-44e9-8693-0d7afff42915",
+      "name": "Evento do catálogo",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 0],
+      "webhookId": "a245ffd6-41db-49fa-9041-005ff373c19e"
+    },
+    {
+      "parameters": {"rule": {"interval": [{"field": "minutes", "minutesInterval": 1}]}},
+      "id": "1f019491-f7c0-4476-a480-f4a4106cbd06",
+      "name": "Reconciliar a cada minuto",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 180]
+    },
+    {
+      "parameters": {},
+      "id": "a24ac121-cc9b-419e-a771-46fb47572efd",
+      "name": "Reconciliar manualmente",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 360]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://SUA-LOJA.vercel.app/api/rag/sync",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body === undefined ? { modo: 'reconciliar' } : { produto_id: $json.body?.produto_id ?? null }) }}",
+        "options": {"timeout": 45000, "redirect": {"redirect": {"followRedirects": false}}}
+      },
+      "id": "3c0c8045-4808-43f2-90c0-f93351fa54d1",
+      "name": "Sincronizar pelo servidor da Innova",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [330, 180],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {"respondWith": "firstIncomingItem", "options": {}},
+      "id": "e520834c-cf89-4df5-8ad5-8a9d5635f44c",
+      "name": "Responder ao webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [620, 180]
+    }
+  ],
+  "connections": {
+    "Evento do catálogo": {"main": [[{"node": "Sincronizar pelo servidor da Innova", "type": "main", "index": 0}]]},
+    "Reconciliar a cada minuto": {"main": [[{"node": "Sincronizar pelo servidor da Innova", "type": "main", "index": 0}]]},
+    "Reconciliar manualmente": {"main": [[{"node": "Sincronizar pelo servidor da Innova", "type": "main", "index": 0}]]},
+    "Sincronizar pelo servidor da Innova": {"main": [[{"node": "Responder ao webhook", "type": "main", "index": 0}]]}
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveExecutionProgress": false,
+    "saveManualExecutions": false
+  },
+  "pinData": {},
+  "tags": []
+}

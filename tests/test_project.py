@@ -12,6 +12,8 @@ from services.cart import whatsapp_link, whatsapp_message
 @pytest.fixture()
 def client(monkeypatch):
     db = mongomock.MongoClient().get_database("test_innova")
+    monkeypatch.setenv("N8N_WEBHOOK_URL", "")
+    monkeypatch.setenv("REDIS_URL", "")
     monkeypatch.setattr("services.products.collection", lambda: db["produtos"])
     from app import create_app
     app = create_app({"TESTING": True, "SECRET_KEY": "test-secret-only", "WTF_CSRF_ENABLED": False})
