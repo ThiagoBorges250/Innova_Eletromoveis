@@ -52,8 +52,7 @@ def _string(value):
 
 def _card(product):
     image = product["imagem"]
-    # As fotos atuais da loja são locais e o upload administrativo gera URLs sob /static/.
-    if not image.startswith("/static/"):
+    if not image.startswith(("/static/", "/midia/produtos/")):
         image = url_for("static", filename="img/sem-foto.svg")
     return {
         "id": product["id"], "nome": product["nome"], "categoria": product["categoria"],

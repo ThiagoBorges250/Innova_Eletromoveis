@@ -69,7 +69,7 @@ O vídeo apresenta o funcionamento do e-commerce, incluindo:
 
 [🎥 Assistir à demonstração do Agente de IA INNOVA AI](https://drive.google.com/file/d/1j3k3_NtdSZlNx8t4u-zMsYTIMSa3IKey/view?usp=sharing)
 
-<< Link para o site >> https://innova-eletromoveis-a95za3c40-basicstore.vercel.app/
+[Acessar o site da Innova Eletromóveis](https://innova-eletromoveis.vercel.app/)
 
 ## 👨‍💻 Desenvolvedores
 

@@ -41,6 +41,9 @@ def create_app(test_config=None):
     from routes.innova_ai import bp as innova_ai_bp, synchronize
     from routes.shop import bp as shop_bp
 
+    from services.images import bp as product_images_bp
+
+    app.register_blueprint(product_images_bp)
     app.register_blueprint(shop_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(innova_ai_bp)

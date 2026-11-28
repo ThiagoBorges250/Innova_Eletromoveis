@@ -55,7 +55,7 @@
       card.href = url;
       const image = element('img');
       image.alt = '';
-      image.src = localPath(product.imagem, '/static/') || widget.dataset.placeholder;
+      image.src = localPath(product.imagem, '/static/') || localPath(product.imagem, '/midia/produtos/') || widget.dataset.placeholder;
       image.addEventListener('error', () => { image.src = widget.dataset.placeholder; }, { once: true });
       const copy = element('span');
       copy.append(element('strong', '', product.nome),
