@@ -3,8 +3,7 @@ from datetime import datetime, timezone
 
 import mongomock
 from services.product_photos import curated_photo, visible_photo
-from services.products import serialize_product
-from routes.shop import _hero_products
+from services.products import list_products, serialize_product
 from aplicar_fotos_produtos import update_photos
 
 
@@ -37,10 +36,15 @@ def test_migration_preserves_prices_and_custom_images():
     assert updated2 == 0
 
 
-def test_carousel_shows_eight_curated_photos():
+def test_carousel_shows_eight_featured_photos(monkeypatch):
     from services.product_photos import PHOTOS
-    products = [dict(nome=n, categoria=c, estoque=2, destaque=False, criado_em=datetime.now(timezone.utc)) for n,c,_,_ in PHOTOS]
-    products.append(dict(nome='Outro produto', categoria='Outros', estoque=9, destaque=True))
-    result = _hero_products(products)
+    col = mongomock.MongoClient().db.produtos
+    monkeypatch.setattr("services.products.collection", lambda: col)
+    for name, category, _, _ in PHOTOS:
+        col.insert_one(dict(nome=name, categoria=category, estoque=2, ativo=True,
+                            destaque=True, criado_em=datetime.now(timezone.utc)))
+    col.insert_one(dict(nome="Outro produto", categoria="Outros", estoque=9, ativo=True,
+                        destaque=False, criado_em=datetime.now(timezone.utc)))
+    result = list_products(featured_in_stock=True, limit=8)
     assert len(result) == 8
-    assert all(curated_photo(item['nome'], item['categoria']) for item in result)
+    assert all(curated_photo(item["nome"], item["categoria"]) for item in result)

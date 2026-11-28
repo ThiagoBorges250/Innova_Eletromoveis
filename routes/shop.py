@@ -4,27 +4,9 @@ from pymongo.errors import PyMongoError
 
 from services.cart import MAX_QTY, cart_details, current_cart, set_quantity, whatsapp_link, whatsapp_message
 from services.products import CATEGORIES, get_product, list_products
-from services.product_photos import curated_photo
 from services.recent import load_recent_products, register_view
 
 bp = Blueprint("shop", __name__)
-
-# Categorias que priorizamos visualmente no carrossel de móveis.
-_HERO_FURNITURE = {"Sofás", "Camas", "Guarda-roupas", "Salas de jantar", "Racks e painéis"}
-
-
-def _hero_products(products):
-    """Até oito produtos em estoque, priorizando as oito fotos da Innova."""
-    available = [item for item in products if int(item.get("estoque") or 0) > 0]
-    # Exibe as oito fotos fornecidas se os oito produtos estiverem disponíveis.
-    # Dentro de cada grupo, conserva a ordem retornada pelo MongoDB.
-    available.sort(key=lambda item: (
-        not bool(curated_photo(item.get("nome"), item.get("categoria"))),
-        not bool(item.get("destaque")),
-        item.get("categoria") not in _HERO_FURNITURE,
-    ))
-    return available[:8]
-
 
 def _is_ajax():
     return "application/json" in request.headers.get("Accept", "")
@@ -46,9 +28,7 @@ def index():
     category = category if category in CATEGORIES else ""
     try:
         produtos = list_products(category=category, search=search, limit=80)
-        # Em pesquisas e categorias, o carrossel continua destacando todo o catálogo.
-        carousel_source = list_products(limit=80) if (category or search) else produtos
-        hero_products = _hero_products(carousel_source)
+        hero_products = [] if category or search else list_products(featured_in_stock=True, limit=8)
         recentes = load_recent_products()
         mongo_error = False
     except (PyMongoError, RuntimeError, ValueError):

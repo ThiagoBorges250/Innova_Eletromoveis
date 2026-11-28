@@ -55,7 +55,7 @@ def test_catalog_add_to_cart_and_checkout(client, monkeypatch):
     buy = http.get("/comprar", follow_redirects=False)
     assert buy.status_code == 302
     assert buy.location.startswith("https://wa.me/5589981342222?text=")
-    assert "2x Sofá de teste" in unquote(buy.location)
+    assert "1. *Sofá de teste*\n   Quantidade: 2" in unquote(buy.location)
     assert "Total: R$ 246,90" in unquote(buy.location)
     http.post("/carrinho/remover", data={"produto_id": pid})
     assert b"Seu carrinho est\xc3\xa1 vazio" in http.get("/carrinho").data
@@ -142,12 +142,18 @@ def test_home_carousel_only_in_stock_products(client):
         "nome": "Sofá esgotado", "categoria": "Sofás", "preco_centavos": 50000,
         "estoque": 0, "ativo": True, "destaque": True, "criado_em": now,
     })
+    db.produtos.insert_one({
+        "nome": "Mesa comum", "categoria": "Salas de jantar", "preco_centavos": 50000,
+        "estoque": 4, "ativo": True, "destaque": False, "criado_em": now,
+    })
     response = http.get("/")
     assert response.status_code == 200
-    assert b'data-hero-carousel' in response.data
+    assert response.data.count(b'data-hero-carousel') == 1
+    assert response.data.index(b'data-hero-carousel') < response.data.index(b'id="categorias"')
     assert "Sofá Premium".encode() in response.data
     assert b'href="/produto/' + str(sofa_id).encode() + b'"' in response.data
     hero = response.data.split(b'data-hero-carousel', 1)[1].split(b'</section>', 1)[0]
+    assert b"Mesa comum" not in hero
     assert "Sofá esgotado".encode() not in hero
     assert b'R$ 2.350,00' in hero
 

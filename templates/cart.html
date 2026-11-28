@@ -2,7 +2,7 @@
 {% block title %}Meu carrinho{% endblock %}
 {% block content %}
 <div class="container page-content">
-  <div class="section-heading"><div><span class="eyebrow">SEU PEDIDO</span><h1>Meu carrinho <span class="heading-orange">de compras</span></h1></div><a href="{{ url_for('shop.index') }}#produtos" class="text-link">Continuar comprando →</a></div>
+  <div class="section-heading"><div><span class="eyebrow">SEU PEDIDO</span><h1>Meu carrinho</h1></div><a href="{{ url_for('shop.index') }}#produtos" class="text-link">Continuar comprando →</a></div>
   {% if itens %}
     <div class="cart-layout">
       <div class="cart-items">

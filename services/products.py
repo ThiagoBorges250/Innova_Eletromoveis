@@ -67,8 +67,10 @@ def ensure_indexes():
     col.create_index([("categoria", ASCENDING), ("nome", ASCENDING)])
 
 
-def list_products(*, category=None, search=None, admin=False, limit=60):
+def list_products(*, category=None, search=None, admin=False, limit=60, featured_in_stock=False):
     query = {} if admin else {"ativo": True}
+    if featured_in_stock:
+        query.update({"destaque": True, "estoque": {"$gt": 0}})
     if category and category in CATEGORIES:
         query["categoria"] = category
     if search:
